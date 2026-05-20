@@ -216,3 +216,11 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+.claude
+
+# Project-specific
+data/*.db
+data/*.db-shm
+data/*.db-wal
+data/*.json

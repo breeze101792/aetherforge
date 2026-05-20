@@ -1,0 +1,6 @@
+{
+  "name": "prompt-vault",
+  "route": "/prompts",
+  "version": "1.0.0",
+  "description": "Save and organize your LLM prompts"
+}

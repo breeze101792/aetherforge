@@ -1,0 +1,6 @@
+{
+  "name": "markdown-note",
+  "route": "/md",
+  "version": "1.0.0",
+  "description": "Multi-root markdown editor with live preview and formatting toolbar"
+}

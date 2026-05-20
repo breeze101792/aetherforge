@@ -1,0 +1,43 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --forge-bg: #fafafa;
+  --forge-fg: #1a1a1a;
+  --forge-primary: #4f46e5;
+  --forge-primary-hover: #4338ca;
+  --forge-border: #e5e5e5;
+  --forge-radius: 8px;
+  --forge-shadow: 0 1px 3px rgba(0,0,0,.08);
+  --forge-font: system-ui, -apple-system, sans-serif;
+  --forge-mono: 'SF Mono', 'Fira Code', monospace;
+}
+
+body {
+  font-family: var(--forge-font);
+  background: var(--forge-bg);
+  color: var(--forge-fg);
+  line-height: 1.6;
+}
+
+a { color: var(--forge-primary); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+button, .forge-btn {
+  display: inline-flex; align-items: center; gap: .5rem;
+  padding: .5rem 1rem; border: none; border-radius: var(--forge-radius);
+  background: var(--forge-primary); color: #fff;
+  font: inherit; cursor: pointer;
+}
+button:hover, .forge-btn:hover { background: var(--forge-primary-hover); }
+
+input, textarea, select {
+  padding: .5rem; border: 1px solid var(--forge-border);
+  border-radius: var(--forge-radius); font: inherit; width: 100%;
+}
+
+.forge-card {
+  background: #fff; border: 1px solid var(--forge-border);
+  border-radius: var(--forge-radius); padding: 1rem; box-shadow: var(--forge-shadow);
+}
+
+.forge-container { max-width: 800px; margin: 0 auto; padding: 1rem; }

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hello Forge</title>
+  <link rel="stylesheet" href="/shared/styles/base.css">
+  <link rel="stylesheet" href="/hello/style.css">
+</head>
+<body>
+  <div class="forge-container">
+    <h1>Hello Forge</h1>
+    <p>A demo tool running on aetherforge.</p>
+
+    <div class="forge-card" style="margin: 1rem 0;">
+      <h2>Greeter</h2>
+      <input type="text" id="name-input" placeholder="Enter your name" value="Forge">
+      <button id="greet-btn" style="margin-top: .5rem;">Greet</button>
+      <pre id="greet-result" style="margin-top: .5rem; background: var(--forge-bg); padding: .5rem; border-radius: var(--forge-radius);"></pre>
+    </div>
+
+    <div class="forge-card" style="margin: 1rem 0;">
+      <h2>Notes</h2>
+      <textarea id="note-input" placeholder="Write a note..." rows="3"></textarea>
+      <button id="save-btn" style="margin-top: .5rem;">Save Note</button>
+      <div id="notes-list" style="margin-top: 1rem;"></div>
+    </div>
+
+    <button id="about-btn">About</button>
+    <a href="/" style="margin-left: 1rem;">Back to Portal</a>
+  </div>
+
+  <forge-modal id="about-modal">
+    <h2>About Hello Forge</h2>
+    <p>This is a demo tool for aetherforge. It exercises the reverse proxy, the Data API, and shared frontend components.</p>
+    <p style="margin-top: 1rem;"><a href="/">Back to Portal</a></p>
+  </forge-modal>
+
+  <script src="/shared/components/modal.js"></script>
+  <script src="/shared/utils/dataClient.js"></script>
+  <script src="/hello/app.js"></script>
+</body>
+</html>

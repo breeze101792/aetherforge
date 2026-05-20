@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prompt Vault</title>
+  <link rel="stylesheet" href="/shared/styles/base.css">
+  <link rel="stylesheet" href="/prompts/style.css">
+</head>
+<body>
+  <div class="forge-container">
+    <header class="vault-header">
+      <div>
+        <h1>Prompt Vault</h1>
+        <p>Save and organize your LLM prompts</p>
+      </div>
+      <div class="header-actions">
+        <input type="text" id="search-input" placeholder="Search prompts..." autocomplete="off">
+        <button id="add-btn" class="forge-btn primary">+ New Prompt</button>
+        <a href="/" class="forge-btn secondary">Portal</a>
+      </div>
+    </header>
+
+    <div id="prompt-list" class="prompt-grid"></div>
+
+    <div id="empty-state" class="empty-state" style="display:none">
+      <p>No prompts saved yet.</p>
+      <p>Click <strong>+ New Prompt</strong> to get started.</p>
+    </div>
+  </div>
+
+  <forge-modal id="editor-modal">
+    <form id="editor-form">
+      <h2 id="editor-title">New Prompt</h2>
+      <input type="hidden" id="edit-id">
+      <label for="title-input">Title</label>
+      <input type="text" id="title-input" required placeholder="e.g. Code review assistant">
+      <label for="tags-input">Tags</label>
+      <input type="text" id="tags-input" placeholder="e.g. coding, review, python">
+      <label for="content-input">Prompt</label>
+      <textarea id="content-input" required rows="6" placeholder="You are a..."></textarea>
+      <div class="form-actions">
+        <button type="submit" class="forge-btn primary">Save</button>
+        <button type="button" id="cancel-btn" class="forge-btn secondary">Cancel</button>
+      </div>
+    </form>
+  </forge-modal>
+
+  <forge-modal id="view-modal">
+    <div class="view-content">
+      <h2 id="view-title"></h2>
+      <div id="view-tags" class="tags-row"></div>
+      <pre id="view-body"></pre>
+      <div class="form-actions">
+        <button id="copy-btn" class="forge-btn primary">Copy</button>
+        <button id="edit-from-view-btn" class="forge-btn secondary">Edit</button>
+        <button class="forge-btn secondary" data-action="close">Close</button>
+      </div>
+    </div>
+  </forge-modal>
+
+  <div id="toast" class="toast" style="display:none"></div>
+
+  <script src="/shared/components/modal.js"></script>
+  <script src="/shared/utils/dataClient.js"></script>
+  <script src="/prompts/app.js"></script>
+</body>
+</html>

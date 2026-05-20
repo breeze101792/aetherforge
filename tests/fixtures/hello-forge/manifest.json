@@ -1,0 +1,6 @@
+{
+  "name": "hello-forge",
+  "route": "/hello",
+  "version": "1.0.0",
+  "description": "Demo tool for aetherforge — greeter and notes"
+}

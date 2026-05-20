@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Markdown Note</title>
+  <link rel="stylesheet" href="/shared/styles/base.css">
+  <link rel="stylesheet" href="/md/style.css">
+</head>
+<body class="mdl-body">
+  <div id="app" class="mdl-app">
+    <!-- Sidebar -->
+    <aside id="sidebar" class="mdl-sidebar">
+      <div class="mdl-sidebar-header">
+        <h2>Markdown Note</h2>
+        <a href="/" class="forge-btn secondary" style="font-size:.8rem;padding:.25rem .6rem;">Portal</a>
+      </div>
+
+      <!-- Storage list -->
+      <div class="mdl-section">
+        <div class="mdl-section-header">
+          <span>Storages</span>
+          <button id="add-storage-btn" class="icon-btn" title="Add storage">+</button>
+        </div>
+        <div id="storage-list" class="mdl-storage-list"></div>
+      </div>
+
+      <!-- File browser -->
+      <div class="mdl-section mdl-file-section">
+        <div class="mdl-section-header">
+          <span>Files</span>
+          <div class="mdl-file-actions">
+            <button id="new-file-btn" class="icon-btn" title="New file" disabled>+F</button>
+            <button id="new-dir-btn" class="icon-btn" title="New folder" disabled>+D</button>
+          </div>
+        </div>
+        <div id="file-tree" class="mdl-file-tree"></div>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="mdl-main">
+      <div class="mdl-toolbar">
+        <span id="current-file" class="mdl-current-file">No file open</span>
+        <div class="mdl-toolbar-actions">
+          <button id="save-btn" class="forge-btn primary" disabled>Save</button>
+          <button id="toggle-edit-btn" class="forge-btn secondary" disabled>Edit</button>
+        </div>
+      </div>
+
+      <div id="editor-preview" class="mdl-editor-preview">
+        <!-- Editor pane (hidden by default, shown when editing) -->
+        <div id="editor-pane" class="mdl-pane mdl-editor-pane">
+          <div class="mdl-pane-header">
+            <span>Editor</span>
+            <button id="close-editor-btn" class="icon-btn" title="Close editor">&times;</button>
+          </div>
+          <div id="edit-toolbar" class="mdl-edit-toolbar">
+            <button class="mdl-tb-btn" data-action="bold" title="Bold (Ctrl+B)">B</button>
+            <button class="mdl-tb-btn" data-action="italic" title="Italic (Ctrl+I)"><em>I</em></button>
+            <button class="mdl-tb-btn" data-action="strikethrough" title="Strikethrough"><s>S</s></button>
+            <span class="mdl-tb-sep"></span>
+            <button class="mdl-tb-btn" data-action="h1" title="Heading 1">H1</button>
+            <button class="mdl-tb-btn" data-action="h2" title="Heading 2">H2</button>
+            <button class="mdl-tb-btn" data-action="h3" title="Heading 3">H3</button>
+            <span class="mdl-tb-sep"></span>
+            <button class="mdl-tb-btn" data-action="code" title="Inline code">&lt;/&gt;</button>
+            <button class="mdl-tb-btn" data-action="codeblock" title="Code block">&lt;[]&gt;</button>
+            <span class="mdl-tb-sep"></span>
+            <button class="mdl-tb-btn" data-action="link" title="Link">&#128279;</button>
+            <button class="mdl-tb-btn" data-action="image" title="Image">&#128444;</button>
+            <span class="mdl-tb-sep"></span>
+            <button class="mdl-tb-btn" data-action="ul" title="Bullet list">&#8226;</button>
+            <button class="mdl-tb-btn" data-action="ol" title="Numbered list">1.</button>
+            <button class="mdl-tb-btn" data-action="quote" title="Blockquote">&ldquo;</button>
+            <span class="mdl-tb-sep"></span>
+            <button class="mdl-tb-btn" data-action="table" title="Insert table">&#9633;</button>
+            <button class="mdl-tb-btn" data-action="hr" title="Horizontal rule">&mdash;</button>
+          </div>
+          <textarea id="editor" class="mdl-editor" placeholder="Select a file to edit..." disabled></textarea>
+        </div>
+
+        <!-- Preview pane (always visible, full-width by default) -->
+        <div class="mdl-pane mdl-preview-pane">
+          <div class="mdl-pane-header">Preview</div>
+          <div id="preview" class="mdl-preview"></div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Add storage modal -->
+  <forge-modal id="storage-modal">
+    <form id="storage-form">
+      <h2>Add Storage Root</h2>
+      <label for="storage-name">Name</label>
+      <input type="text" id="storage-name" required placeholder="e.g. my-notes">
+      <label for="storage-path">Directory path</label>
+      <input type="text" id="storage-path" required placeholder="e.g. /Users/you/notes">
+      <div class="form-actions">
+        <button type="submit" class="forge-btn primary">Add</button>
+        <button type="button" class="forge-btn secondary" data-action="close">Cancel</button>
+      </div>
+    </form>
+  </forge-modal>
+
+  <!-- New file modal -->
+  <forge-modal id="new-item-modal">
+    <form id="new-item-form">
+      <h2 id="new-item-title">New File</h2>
+      <input type="hidden" id="new-item-type" value="file">
+      <label for="new-item-name">Name</label>
+      <input type="text" id="new-item-name" required placeholder="e.g. notes.md">
+      <div class="form-actions">
+        <button type="submit" class="forge-btn primary">Create</button>
+        <button type="button" class="forge-btn secondary" data-action="close">Cancel</button>
+      </div>
+    </form>
+  </forge-modal>
+
+  <!-- Toast -->
+  <div id="toast" class="mdl-toast" style="display:none"></div>
+
+  <script src="/shared/components/modal.js"></script>
+  <script src="/md/app.js"></script>
+</body>
+</html>

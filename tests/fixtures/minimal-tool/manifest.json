@@ -1,0 +1,6 @@
+{
+  "name": "minimal-tool",
+  "route": "/minimal",
+  "version": "1.0.0",
+  "description": "A minimal test tool"
+}

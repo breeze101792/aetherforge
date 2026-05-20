@@ -1,0 +1,92 @@
+.vault-header {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  flex-wrap: wrap; gap: 1rem;
+  padding: 2rem 0 1.5rem;
+  border-bottom: 1px solid var(--forge-border);
+  margin-bottom: 1.5rem;
+}
+.vault-header h1 { color: var(--forge-primary); font-size: 1.8rem; }
+.vault-header p { color: #6b7280; }
+
+.header-actions {
+  display: flex; align-items: center; gap: .75rem; flex-wrap: wrap;
+}
+.header-actions input {
+  width: auto; min-width: 200px;
+}
+
+.prompt-grid {
+  display: flex; flex-direction: column; gap: .75rem;
+}
+
+.prompt-card { transition: border-color .15s; }
+.prompt-card:hover { border-color: var(--forge-primary); }
+
+.card-header {
+  display: flex; justify-content: space-between; align-items: center;
+  gap: .5rem;
+}
+.card-title { font-size: 1.05rem; font-weight: 600; }
+
+.card-actions { display: flex; gap: .25rem; }
+.icon-btn {
+  background: none; border: none; color: #9ca3af; cursor: pointer;
+  padding: .25rem .4rem; border-radius: 4px; font-size: .9rem;
+  line-height: 1;
+}
+.icon-btn:hover { background: var(--forge-bg); color: var(--forge-fg); }
+.delete-btn:hover { color: #ef4444; }
+
+.card-preview {
+  color: #6b7280; font-size: .9rem; margin-top: .35rem;
+  white-space: pre-wrap; line-height: 1.5;
+}
+
+.tags-row {
+  display: flex; gap: .35rem; flex-wrap: wrap; margin-top: .35rem;
+}
+.tag {
+  display: inline-block; padding: .1rem .5rem;
+  background: color-mix(in srgb, var(--forge-primary) 10%, transparent);
+  color: var(--forge-primary); border-radius: 999px;
+  font-size: .75rem; font-weight: 500;
+}
+
+/* Editor form */
+form label {
+  display: block; font-size: .85rem; font-weight: 600;
+  margin: .75rem 0 .25rem; color: var(--forge-fg);
+}
+form label:first-of-type { margin-top: 0; }
+form textarea {
+  font-family: var(--forge-mono); font-size: .9rem;
+  resize: vertical;
+}
+.form-actions {
+  display: flex; gap: .5rem; margin-top: 1rem; justify-content: flex-end;
+}
+
+/* View modal */
+.view-content pre {
+  background: var(--forge-bg); padding: 1rem; border-radius: var(--forge-radius);
+  font-family: var(--forge-mono); font-size: .85rem; line-height: 1.7;
+  white-space: pre-wrap; max-height: 400px; overflow-y: auto;
+  margin: .75rem 0;
+}
+
+/* Buttons */
+.forge-btn.primary { background: var(--forge-primary); color: #fff; }
+.forge-btn.primary:hover { background: var(--forge-primary-hover); }
+.forge-btn.secondary {
+  background: #fff; color: var(--forge-fg);
+  border: 1px solid var(--forge-border);
+}
+.forge-btn.secondary:hover { background: var(--forge-bg); }
+
+/* Toast */
+.toast {
+  position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%);
+  background: #1a1a1a; color: #fff; padding: .6rem 1.2rem;
+  border-radius: 999px; font-size: .9rem; z-index: 2000;
+  box-shadow: 0 4px 12px rgba(0,0,0,.2);
+}

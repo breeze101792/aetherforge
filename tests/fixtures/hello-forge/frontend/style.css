@@ -1,0 +1,2 @@
+h1 { color: var(--forge-primary); }
+pre { font-family: var(--forge-mono); overflow-x: auto; }
