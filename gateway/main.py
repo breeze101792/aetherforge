@@ -37,7 +37,7 @@ async def lifespan(app: FastAPI):
     await tool_proxy.close()
 
 
-app = FastAPI(title="aetherforge", lifespan=lifespan)
+app = FastAPI(title="Aether Forge", lifespan=lifespan)
 app.state.db_path = settings.db_path
 
 app.include_router(data_router)
@@ -75,7 +75,8 @@ def portal():
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>aetherforge</title>
+<title>Aether Forge</title>
+<link rel="icon" href="/shared/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="/shared/styles/base.css">
 <style>
   .portal-header {{
@@ -133,7 +134,7 @@ def portal():
 </head>
 <body>
 <div class="portal-header">
-  <h1>aetherforge</h1>
+  <h1>Aether Forge</h1>
   <p>{len(tools)} tool(s) running</p>
 </div>
 <div class="tool-grid">
@@ -150,7 +151,7 @@ async def proxy_catch_all(request: Request, path: str):
 
 def main():
     import uvicorn
-    uvicorn.run("gateway.main:app", host="127.0.0.1", port=settings.gateway_port, reload=False)
+    uvicorn.run("gateway.main:app", host=settings.host, port=settings.gateway_port, reload=False)
 
 
 if __name__ == "__main__":

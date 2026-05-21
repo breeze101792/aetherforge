@@ -21,15 +21,19 @@ else
     source venv/bin/activate
 fi
 
+if [ ! -f aetherforge.toml ]; then
+    echo "No aetherforge.toml found, copying from aetherforge.example.toml"
+    cp aetherforge.example.toml aetherforge.toml
+fi
+
 export AETHERFORGE_ENV="$MODE"
 
 if [ "$MODE" = "test" ]; then
-    export GATEWAY_PORT="${GATEWAY_PORT:-8001}"
-    echo "Starting aetherforge [TEST mode] on http://127.0.0.1:${GATEWAY_PORT:-8001}"
-    echo "  DB: data/test.db  Registry: data/test-registry.json"
+    echo "Starting Aether Forge [TEST mode] (see aetherforge.toml [test] section)"
 else
-    echo "Starting aetherforge on http://127.0.0.1:${GATEWAY_PORT:-8000}"
-    echo "  DB: data/aetherforge.db  Registry: data/registry.json"
+    echo "Starting Aether Forge (see aetherforge.toml [server] section)"
 fi
+
+mkdir -p data
 
 python -m gateway.main

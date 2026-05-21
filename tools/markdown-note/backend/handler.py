@@ -108,7 +108,7 @@ def create_app():
             raise HTTPException(400, "Unsupported file type")
         with open(abs_path, "r", encoding="utf-8") as f:
             content = f.read()
-        return {"path": path, "content": content, "name": os.path.basename(abs_path)}
+        return {"path": path, "content": content, "name": os.path.basename(abs_path), "mtime": os.path.getmtime(abs_path)}
 
     @app.post("/file")
     async def write_file(request: Request, path: str = ""):
@@ -122,7 +122,16 @@ def create_app():
         os.makedirs(os.path.dirname(abs_path), exist_ok=True)
         with open(abs_path, "w", encoding="utf-8") as f:
             f.write(content)
-        return {"saved": True, "path": path}
+        return {"saved": True, "path": path, "mtime": os.path.getmtime(abs_path)}
+
+    @app.get("/file/mtime")
+    def file_mtime(path: str = ""):
+        if not path:
+            raise HTTPException(400, "path required")
+        abs_path, _ = _resolve_root(path)
+        if not os.path.isfile(abs_path):
+            raise HTTPException(404, "File not found")
+        return {"mtime": os.path.getmtime(abs_path)}
 
     @app.delete("/file")
     def delete_file(path: str = ""):

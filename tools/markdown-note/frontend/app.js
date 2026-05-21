@@ -6,7 +6,7 @@ const fileTree = document.getElementById('file-tree');
 const editor = document.getElementById('editor');
 const preview = document.getElementById('preview');
 const currentFile = document.getElementById('current-file');
-const saveBtn = document.getElementById('save-btn');
+const reloadBtn = document.getElementById('reload-btn');
 const toggleEditBtn = document.getElementById('toggle-edit-btn');
 const editorPane = document.getElementById('editor-pane');
 const editorPreview = document.getElementById('editor-preview');
@@ -21,6 +21,7 @@ let activeStorage = null;
 let currentDir = null;       // {name, path} — the directory being browsed
 let openFilePath = null;     // full "root:rel/path" string
 let openFileName = null;
+let lastMtime = null;
 let treeCache = {};          // path -> [{name, type, path}]
 
 // ── Toast ──
@@ -190,9 +191,11 @@ async function openFile(path) {
   openFileName = data.name;
   editor.value = data.content;
   editor.disabled = false;
-  saveBtn.disabled = false;
+  reloadBtn.disabled = false;
   toggleEditBtn.disabled = false;
   currentFile.textContent = path;
+  lastMtime = data.mtime;
+  dirty = false;
   exitEditMode();
   await renderPreview();
   if (treeCache[`${activeStorage}:`]) renderTree(`${activeStorage}:`);
@@ -203,21 +206,25 @@ function closeFile() {
   openFileName = null;
   editor.value = '';
   editor.disabled = true;
-  saveBtn.disabled = true;
+  reloadBtn.disabled = true;
   toggleEditBtn.disabled = true;
   currentFile.textContent = 'No file open';
   preview.innerHTML = '';
   exitEditMode();
 }
 
+let dirty = false;
+
 async function saveFile() {
   if (!openFilePath) return;
-  await fetch(`${API}/file?path=${encodeURIComponent(openFilePath)}`, {
+  const resp = await fetch(`${API}/file?path=${encodeURIComponent(openFilePath)}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ content: editor.value }),
   });
-  showToast('Saved');
+  const result = await resp.json();
+  lastMtime = result.mtime;
+  dirty = false;
   await renderPreview();
 }
 
@@ -233,11 +240,17 @@ async function renderPreview() {
   preview.innerHTML = data.html;
 }
 
-// Debounced preview
+// Debounced preview + autosave
 let renderTimer = null;
+let autosaveTimer = null;
 editor.addEventListener('input', () => {
+  dirty = true;
   clearTimeout(renderTimer);
   renderTimer = setTimeout(renderPreview, 300);
+  clearTimeout(autosaveTimer);
+  autosaveTimer = setTimeout(() => {
+    if (dirty && openFilePath) saveFile();
+  }, 1500);
 });
 
 // ── Edit toolbar ──
@@ -318,10 +331,6 @@ function insertMarkdown(action) {
 
 // Keyboard shortcuts for formatting
 document.addEventListener('keydown', (e) => {
-  if ((e.ctrlKey || e.metaKey) && e.key === 's') {
-    e.preventDefault();
-    if (openFilePath) saveFile();
-  }
   if ((e.ctrlKey || e.metaKey) && e.key === 'b' && !editor.disabled) {
     e.preventDefault();
     insertMarkdown('bold');
@@ -398,8 +407,21 @@ document.getElementById('new-item-form').addEventListener('submit', async (e) =>
   await loadDirectory(currentDir.path);
 });
 
+// ── Reload ──
+reloadBtn.addEventListener('click', async () => {
+  if (!openFilePath) return;
+  const resp = await fetch(`${API}/file?path=${encodeURIComponent(openFilePath)}`);
+  if (!resp.ok) { showToast('Failed to reload'); return; }
+  const data = await resp.json();
+  editor.value = data.content;
+  lastMtime = data.mtime;
+  dirty = false;
+  showToast('Reloaded');
+  await renderPreview();
+});
+
 // ── Delete file ──
-document.getElementById('save-btn').addEventListener('contextmenu', async (e) => {
+reloadBtn.addEventListener('contextmenu', async (e) => {
   e.preventDefault();
   if (!openFilePath) return;
   if (!confirm(`Delete ${openFileName}?`)) return;
@@ -408,6 +430,19 @@ document.getElementById('save-btn').addEventListener('contextmenu', async (e) =>
   treeCache = {};
   closeFile();
   if (currentDir) await loadDirectory(currentDir.path);
+});
+
+// ── Detect external changes ──
+window.addEventListener('focus', async () => {
+  if (!openFilePath || !lastMtime) return;
+  try {
+    const resp = await fetch(`${API}/file/mtime?path=${encodeURIComponent(openFilePath)}`);
+    if (!resp.ok) return;
+    const data = await resp.json();
+    if (data.mtime !== lastMtime) {
+      showToast('File changed on disk — click Reload to update');
+    }
+  } catch (_) { /* ignore network errors during focus check */ }
 });
 
 // ── Helpers ──

@@ -1,0 +1,22 @@
+[server]
+# Port and bind address for the gateway
+port = 8000
+host = "127.0.0.1"
+
+[tools]
+# Port range for tool runtime processes
+port_start = 8101
+port_end = 8199
+# Directory where tool folders live (relative to project root)
+dir = "tools"
+
+[data]
+# Paths are relative to project root
+db_path = "data/aetherforge.db"
+registry_path = "data/registry.json"
+
+# Overrides applied when AETHERFORGE_ENV=test
+[test]
+port = 8001
+db_path = "data/test.db"
+registry_path = "data/test-registry.json"

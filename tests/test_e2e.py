@@ -4,13 +4,36 @@ import shutil
 import signal
 import subprocess
 import time
+import tomllib
 
 import httpx
 import pytest
 
-GATEWAY_URL = "http://127.0.0.1:8001"
 PROJECT = os.path.join(os.path.dirname(__file__), "..")
 HELLO_FORGE_TEMPLATE = os.path.join(os.path.dirname(__file__), "fixtures", "hello-forge")
+
+
+def _test_port():
+    """Read test port from aetherforge.toml [test] section, default 8001."""
+    config_path = os.path.join(PROJECT, "aetherforge.toml")
+    if os.path.exists(config_path):
+        with open(config_path, "rb") as f:
+            return tomllib.load(f).get("test", {}).get("port", 8001)
+    return 8001
+
+
+GATEWAY_URL = f"http://127.0.0.1:{_test_port()}"
+
+
+def _kill_port(port):
+    """Kill any process listening on the given port. Leaves other ports alone."""
+    result = subprocess.run(["lsof", "-ti", f":{port}"], capture_output=True, text=True)
+    pids = result.stdout.strip().split()
+    for pid in pids:
+        try:
+            os.kill(int(pid), signal.SIGKILL)
+        except (ProcessLookupError, PermissionError):
+            pass
 
 
 def _clean_tools_dir():
@@ -30,7 +53,6 @@ def _start_gateway():
     env = {
         **os.environ,
         "AETHERFORGE_ENV": "test",
-        "GATEWAY_PORT": "8001",
     }
     proc = subprocess.Popen(
         ["python", "-m", "gateway.main"],
@@ -114,8 +136,14 @@ def _restore_original():
 @pytest.fixture(autouse=True)
 def _setup_teardown():
     """Clean up before each test."""
-    subprocess.run(["pkill", "-f", "gateway.main"], capture_output=True)
-    subprocess.run(["pkill", "-f", "runtime.main"], capture_output=True)
+    # Ensure aetherforge.toml exists (copy from example template if missing)
+    config_path = os.path.join(PROJECT, "aetherforge.toml")
+    example_path = os.path.join(PROJECT, "aetherforge.example.toml")
+    if not os.path.exists(config_path) and os.path.exists(example_path):
+        shutil.copy(example_path, config_path)
+
+    # Only kill test-port processes, never touch production (port 8000)
+    _kill_port(8001)
     time.sleep(0.5)
     _clean_tools_dir()
     # Clean test database for fresh state (never touches production db)
@@ -125,8 +153,7 @@ def _setup_teardown():
             os.remove(p)
     yield
     _clean_tools_dir()
-    subprocess.run(["pkill", "-f", "gateway.main"], capture_output=True)
-    subprocess.run(["pkill", "-f", "runtime.main"], capture_output=True)
+    _kill_port(8001)
 
 
 def test_gateway_starts_and_portal_loads():
@@ -140,7 +167,7 @@ def test_gateway_starts_and_portal_loads():
 
         resp = httpx.get(f"{GATEWAY_URL}/", timeout=3)
         assert resp.status_code == 200
-        assert "aetherforge" in resp.text
+        assert "Aether Forge" in resp.text
         assert "<!DOCTYPE html>" in resp.text
     finally:
         _stop_gateway(proc)
